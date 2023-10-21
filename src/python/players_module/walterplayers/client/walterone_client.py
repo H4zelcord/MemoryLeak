@@ -1,5 +1,5 @@
 from os import getenv
-from walterplayers.client.dtos.responses import FindResponse, AttackResponse, MoveResponse, DefendResponse
+from walterplayers.client.dtos.responses import FindResponse, AttackResponse, MoveResponse, DefendResponse, ErrorResponse
 
 import requests
 
@@ -105,10 +105,10 @@ class WalteroneClient:
                 return False, MoveResponse(**response.json())
             else:
                 print('Error while trying to move to zone ' + str(to_zone) + '. Exception : ' + response.text)
-                return True, None
+                return True, ErrorResponse(to_zone, response.text)
         except requests.exceptions.RequestException as e:
             print("Error while trying to move. ", e)
-            return True, None
+            return True, ErrorResponse(to_zone, e.strerror)
 
     def defends(self, match_ia, active):
         ''' Chanfe your defend mode.
