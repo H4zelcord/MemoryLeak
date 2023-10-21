@@ -19,6 +19,11 @@ class DrunkPlayer(BasePlayer):
             case Action.DEFEND:
                 return result_action, choice([True, False])
             case Action.MOVE:
-                return result_action, choice(self.get_id_neighbours_zones(find_response))
+                for zone in find_response.neighbours_zones:
+                    print(zone.zone_id)
+                    num_enemies = self.get_num_enemies_in_zone(zone)
+                if num_enemies == 0:
+                    print("No hay enemigos...")
+                    return Action.MOVE, zone.zone_id
             case _:
                 return result_action, None
