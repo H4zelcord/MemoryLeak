@@ -3,9 +3,9 @@ import datetime
 from walterplayers.constants import Action
 from walterplayers.base_player import BasePlayer
 from walterplayers.bipolar.strategy_manager import StrategyManager
-from walterplayers.bipolar.advisers.defensive_adviser import DefensiveAdviser
-from walterplayers.bipolar.advisers.offensive_adviser import OffensiveAdviser
 from walterplayers.bipolar.advisers.ultra_offensive_adviser import UltraOffensiveAdviser
+from walterplayers.bipolar.advisers.offensive_adviser import OffensiveAdviser
+from walterplayers.bipolar.advisers.defensive_adviser import DefensiveAdviser
 from walterplayers.bipolar.advisers.ultra_defensive_adviser import UltraDefensiveAdviser
 from walterplayers.bipolar.constants import AdviserMode
 
@@ -23,9 +23,10 @@ class BipolarPlayer(BasePlayer):
         self._strategy_manager = StrategyManager(ultra_offensive_limit, offensive_limit, defensive_limit, ultra_defensive_limit)
         self._advisers = {
             AdviserMode.UltraOffensive: UltraOffensiveAdviser(self),
-            AdviserMode.UltraDefensive: UltraDefensiveAdviser(self),
+            AdviserMode.Offensive: OffensiveAdviser(self),
             AdviserMode.Defensive: DefensiveAdviser(self),
-            AdviserMode.Offensive: OffensiveAdviser(self)}
+            AdviserMode.UltraDefensive: UltraDefensiveAdviser(self)
+            }
 
     def choose_action(self, find_response):
         print(str(datetime.datetime.now()) +
