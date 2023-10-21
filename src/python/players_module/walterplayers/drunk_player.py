@@ -14,6 +14,8 @@ class DrunkPlayer(BasePlayer):
         print(find_response)
 
         match result_action:
+            case Action.STOP:
+                return Action.STOP
             case Action.ATTACK:
                 return result_action, choice(self.get_id_ias(find_response))
             case Action.DEFEND:
@@ -22,8 +24,8 @@ class DrunkPlayer(BasePlayer):
                 for zone in find_response.neighbours_zones:
                     print(zone.zone_id)
                     num_enemies = self.get_num_enemies_in_zone(zone)
-                if num_enemies == 0:
-                    print("No hay enemigos...")
-                    return Action.MOVE, zone.zone_id
+                    if num_enemies == 0:
+                        print("No hay enemigos...")
+                        return Action.MOVE, zone.zone_id
             case _:
                 return result_action, None
