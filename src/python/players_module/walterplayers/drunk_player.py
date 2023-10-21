@@ -10,12 +10,20 @@ class DrunkPlayer(BasePlayer):
         
         available_actions = list(Action)
 
-        result_action = Action.MOVE
-        print(find_response)
+        print(self._life_points)
+        
+        zone = find_response.current_zone
+        num_enemies = self.get_num_enemies_in_zone(zone)
+        if num_enemies == 0:
+            print("No hay enemigos. Nos quedamos quietos...")
+            result_action = Action.STOP
+        if num_enemies != 0:
+            print("Hay enemigos. Deberíamos movernos...")
+            result_action = Action.MOVE
 
         match result_action:
             case Action.STOP:
-                return Action.STOP
+                return result_action, None
             case Action.ATTACK:
                 return result_action, choice(self.get_id_ias(find_response))
             case Action.DEFEND:
