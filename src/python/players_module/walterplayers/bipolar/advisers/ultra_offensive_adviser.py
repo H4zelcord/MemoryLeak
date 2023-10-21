@@ -19,7 +19,7 @@ class UltraOffensiveAdviser(Adviser):
         self._attack_retry = 0 
 
     def is_interesting_zone(self, zone):
-        return zone.triggers.go_ryu, zone.triggers.lucky_unlucky, zone.triggers.karin_gift
+        return zone.triggers.go_ryu or zone.triggers.lucky_unlucky or zone.triggers.karin_gift
 
     def get_weight_for_zone(self, zone):
         # lets include the edge, taking path with lucky_unlucky
