@@ -10,8 +10,11 @@ class DrunkPlayer(BasePlayer):
         
         available_actions = list(Action)
 
-        print(self._life_points)
-        
+        #Consultar Vida Actual 
+        print("Vida actual: ", self._life_points)
+
+        #Si estamos en una zona con enemigos, llamaremos a MOVE para que encuentre una zona libre a la que ir.
+        #En caso contrario, llamaremos a STOP para permanecer en la zona segura.
         zone = find_response.current_zone
         num_enemies = self.get_num_enemies_in_zone(zone)
         if num_enemies == 0:
@@ -21,6 +24,7 @@ class DrunkPlayer(BasePlayer):
             print("Hay enemigos. Deberíamos movernos...")
             result_action = Action.MOVE
 
+        #Diferentes respuestas en función de la acción decidida
         match result_action:
             case Action.STOP:
                 return result_action, None
@@ -29,6 +33,7 @@ class DrunkPlayer(BasePlayer):
             case Action.DEFEND:
                 return result_action, choice([True, False])
             case Action.MOVE:
+                #Buscamos una zona libre entre las vecinas. Si se encuentra, se mueve.
                 for zone in find_response.neighbours_zones:
                     print(zone.zone_id)
                     num_enemies = self.get_num_enemies_in_zone(zone)
