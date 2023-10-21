@@ -5,6 +5,8 @@ from walterplayers.base_player import BasePlayer
 from walterplayers.bipolar.strategy_manager import StrategyManager
 from walterplayers.bipolar.advisers.defensive_adviser import DefensiveAdviser
 from walterplayers.bipolar.advisers.offensive_adviser import OffensiveAdviser
+from walterplayers.bipolar.advisers.ultra_offensive_adviser import UltraOffensiveAdviser
+from walterplayers.bipolar.advisers.ultra_defensive_adviser import UltraDefensiveAdviser
 from walterplayers.bipolar.constants import AdviserMode
 
 class BipolarPlayer(BasePlayer):
@@ -15,11 +17,13 @@ class BipolarPlayer(BasePlayer):
     Defensive strategy will look for the health zone using dijkstra to compute the shortest way.
     Offensive strategy will attack when the player find an enemy in a zone.'''
 
-    def __init__(self, defensive_limit=0.8, offensive_limit=0.9, host=None, username=None,
+    def __init__(self, ultra_offensive_limit = 1, offensive_limit = 0.8, defensive_limit=0.5, ultra_defensive_limit=0.3, host=None, username=None,
                  password=None, match=None):
         super().__init__(host, username, password, match)
-        self._strategy_manager = StrategyManager(defensive_limit, offensive_limit)
+        self._strategy_manager = StrategyManager(ultra_offensive_limit, offensive_limit, defensive_limit, ultra_defensive_limit)
         self._advisers = {
+            AdviserMode.UltraOffensive: UltraOffensiveAdviser(self),
+            AdviserMode.UltraDefensive: UltraDefensiveAdviser(self),
             AdviserMode.Defensive: DefensiveAdviser(self),
             AdviserMode.Offensive: OffensiveAdviser(self)}
 

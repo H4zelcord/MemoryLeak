@@ -16,7 +16,7 @@ class OffensiveAdviser(Adviser):
         self._attack_retry = 0 
 
     def is_interesting_zone(self, zone):
-        return zone.triggers.go_ryu, zone.triggers.lucky_unluky, zone.triggers.karin_gift
+        return zone.triggers.go_ryu, zone.triggers.lucky_unlucky, zone.triggers.karin_gift
 
     def get_weight_for_zone(self, zone):
         # lets include the edge, taking path with lucky_unlucky
@@ -28,7 +28,7 @@ class OffensiveAdviser(Adviser):
 
     def get_next_action(self, find_response):
         ''' atacamos 3 veces o hasta que nos hagan daño. '''
-        if ((Action.MOVE == self._last_action or Action.STOP) and 
+        if (Action.MOVE == self._last_action  and 
             self._player.is_possible_attack(find_response)):
             self._last_action = Action.ATTACK
             self._attacking = True

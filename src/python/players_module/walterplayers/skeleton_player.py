@@ -4,7 +4,7 @@ This is a demo player that does nothing. It is used as a template for new player
 import os.path
 
 from dotenv import load_dotenv
-from walterplayers.drunk_player import BipolarPlayer
+from walterplayers.bipolar.bipolar_player import BipolarPlayer
 from walterplayers.base_player import BasePlayer
 from walterplayers.constants import Action
 

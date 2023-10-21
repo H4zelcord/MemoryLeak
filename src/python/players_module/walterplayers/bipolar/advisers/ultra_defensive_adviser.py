@@ -7,7 +7,7 @@ from random import choice, uniform
 from walterplayers.bipolar.advisers.adviser import Adviser
 from walterplayers.constants import Action
 
-class DefensiveAdviser(Adviser):
+class UltraDefensiveAdviser(Adviser):
     ''' Defensive Adviser will be used when life is less than the limit.
     This Adviser will priorize going for karin_gift zones'''
 
