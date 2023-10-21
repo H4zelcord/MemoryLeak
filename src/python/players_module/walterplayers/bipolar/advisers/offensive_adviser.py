@@ -8,8 +8,8 @@ class OffensiveAdviser(Adviser):
     ''' Offensive Adviser will be used when life is higher than the limit.
     This Adviser will priorize going for go_ryu zones'''
 
-    def _init_(self, player):
-        super()._init_(player)
+    def __init__(self, player):
+        super().__init__(player)
         self._last_action = Action.STOP
         self._attacking = False
         self._life_before_attack = 0
@@ -51,8 +51,7 @@ class OffensiveAdviser(Adviser):
         if (self._last_action == Action.MOVE or self._last_action == Action.ATTACK or self._last_action == Action.STOP):
                 for zone in find_response.neighbours_zones:
                     print(zone.zone_id)
-                    num_enemies = self.get_num_enemies_in_zone(zone)
-                    if (self.karin_gift & self.lucky_unlucky):
+                    if (zone.triggers.karin_gift & zone.triggers.lucky_unlucky):
                         return Action.MOVE, zone.zone_id
                     else:
                         return Action.MOVE, zone.zone_id
