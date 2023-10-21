@@ -12,6 +12,7 @@ class DrunkPlayer(BasePlayer):
 
         #Consultar Vida Actual 
         print("Vida actual: ", self._life_points)
+        #struct (list, dict) = mod1, mod2, mod3, mod4 (activan según self._life points)
 
         #Si estamos en una zona con enemigos, llamaremos a MOVE para que encuentre una zona libre a la que ir.
         #En caso contrario, llamaremos a STOP para permanecer en la zona segura.
