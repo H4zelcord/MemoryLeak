@@ -16,7 +16,7 @@ class DrunkPlayer(BasePlayer):
             available_actions.remove(Action.MOVE)
 
         result_action = choice(available_actions)
-
+        print(find_response)
         match result_action:
             case Action.ATTACK:
                 return result_action, choice(self.get_id_ias(find_response))

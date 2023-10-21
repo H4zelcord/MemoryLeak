@@ -3,7 +3,7 @@ from os import getenv
 import walterplayers
 
 
-ia_flavour = getenv("WALTERONE_IA_FLAVOUR", "BipolarPlayer")
+ia_flavour = getenv("WALTERONE_IA_FLAVOUR", "DrunkPlayer")
 class_ = getattr(walterplayers, ia_flavour)
 
 
