@@ -2,5 +2,7 @@
 from enum import Enum
 
 class AdviserMode(Enum):
-    Defensive = 0
-    Offensive = 1
+    UltraDefensive = 0
+    Defensive = 1
+    Offensive = 2
+    UltraOffensive = 3

@@ -4,8 +4,8 @@ class StrategyManager:
     ''' Manager of strategy. Given defensive and ofensive limit, a strategy will be choosen. '''
 
     def __init__(self, defensive_limit, offensive_limit):
-        self._previous_adviser_mode = AdviserMode.Offensive
-        self._adviser_mode = AdviserMode.Offensive
+        self._previous_adviser_mode = AdviserMode.UltraOffensive
+        self._adviser_mode = AdviserMode.UltraOffensive
         self._defensive_limit = defensive_limit
         self._offensive_limit = offensive_limit
         self._defenvise_mode_limit = None
@@ -24,6 +24,11 @@ class StrategyManager:
                 str(self._defenvise_mode_limit) + ' and Offensive Mode Limit: ' +
                 str(self._offensive_mode_limit))
 
+        if (AdviserMode.UltraOffensive == self._adviser_mode & life_points <= self._defenvise_mode_limit):
+            self._previous_adviser_mode = self._adviser_mode
+            self._adviser_mode = AdviserMode.Offensive
+            return
+        
         if (AdviserMode.Offensive == self._adviser_mode
             and life_points <= self._defenvise_mode_limit):
             self._previous_adviser_mode = self._adviser_mode
@@ -31,6 +36,12 @@ class StrategyManager:
             return
 
         if (AdviserMode.Defensive == self._adviser_mode
+            and life_points >= self._offensive_mode_limit):
+            self._previous_adviser_mode = self._adviser_mode
+            self._adviser_mode = AdviserMode.Offensive
+            return
+
+        if (AdviserMode.UltraDefensive == self._adviser_mode
             and life_points >= self._offensive_mode_limit):
             self._previous_adviser_mode = self._adviser_mode
             self._adviser_mode = AdviserMode.Offensive
