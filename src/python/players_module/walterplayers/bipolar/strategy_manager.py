@@ -39,17 +39,17 @@ class StrategyManager:
             )
         
         if life_points > 0 and life_points < self._ultra_defensive_mode_limit:
+            self._previous_adviser_mode = self._adviser_mode
             self._adviser_mode = AdviserMode.UltraDefensive
-            self._previous_adviser_mode = AdviserMode.Defensive
         elif self._ultra_defensive_limit <= life_points and life_points < self._defensive_mode_limit:
+            self._previous_adviser_mode = self._adviser_mode
             self._adviser_mode = AdviserMode.Defensive
-            self._previous_adviser_mode = AdviserMode.UltraDefensive
         elif self._defensive_limit <= life_points and life_points < self._offensive_mode_limit:
+            self._previous_adviser_mode = self._adviser_mode
             self._adviser_mode = AdviserMode.Offensive
-            self._previous_adviser_mode = AdviserMode.UltraOffensive
         elif self._offensive_limit <= life_points and life_points < self._ultra_offensive_mode_limit:
+            self._previous_adviser_mode = self._adviser_mode
             self._adviser_mode = AdviserMode.UltraOffensive
-            self._previous_adviser_mode = AdviserMode.Offensive
 
     def is_strategy_changed(self):
         ''' Return True if life point changes strategy to follow up. '''
@@ -58,25 +58,3 @@ class StrategyManager:
     def get_adviser_mode(self):
         ''' Return active adviser mode. '''
         return self._adviser_mode
-
-
-if __name__ == "__main__":
-    strategyManager = StrategyManager(1, 0.8, 0.5, 0.3)
-    strategyManager.update_life_points(200)
-    print(strategyManager.get_adviser_mode())
-    print(strategyManager.is_strategy_changed())
-    strategyManager.update_life_points(170)
-    print(strategyManager.get_adviser_mode())
-    print(strategyManager.is_strategy_changed())
-    strategyManager.update_life_points(150)
-    print(strategyManager.get_adviser_mode())
-    print(strategyManager.is_strategy_changed())
-    strategyManager.update_life_points(120)
-    print(strategyManager.get_adviser_mode())
-    print(strategyManager.is_strategy_changed())
-    strategyManager.update_life_points(90)
-    print(strategyManager.get_adviser_mode())
-    print(strategyManager.is_strategy_changed())
-    strategyManager.update_life_points(25)
-    print(strategyManager.get_adviser_mode())
-    print(strategyManager.is_strategy_changed())
