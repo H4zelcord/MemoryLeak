@@ -1,7 +1,8 @@
 from random import choice, uniform
-
+from walterplayers.client.dtos.responses import Status
 from walterplayers.bipolar.advisers.adviser import Adviser
 from walterplayers.constants import Action
+
 
 class OffensiveAdviser(Adviser):
     ''' Offensive Adviser will be used when life is higher than the limit.
@@ -10,25 +11,52 @@ class OffensiveAdviser(Adviser):
     def __init__(self, player):
         super().__init__(player)
         self._last_action = Action.STOP
+        self._attacking = False
+        self._life_before_attack = 0
+        self._attack_retry = 0 
 
     def is_interesting_zone(self, zone):
-        return zone.triggers.go_ryu
+        return zone.triggers.go_ryu, zone.triggers.lucky_unluky, zone.triggers.karin_gift
 
     def get_weight_for_zone(self, zone):
         # lets include the edge, taking path with lucky_unlucky
-        if zone.triggers.lucky_unlucky:
+        if zone.triggers.lucky_unlucky | zone.triggers.karin_gift:
             weight = 0.5
         else:
             weight = 1
         return weight
 
     def get_next_action(self, find_response):
-        if Action.MOVE == self._last_action and self._player.is_possible_attack(find_response):
+        ''' atacamos 3 veces o hasta que nos hagan daño. '''
+        if ((Action.MOVE == self._last_action or Action.STOP) and 
+            self._player.is_possible_attack(find_response)):
             self._last_action = Action.ATTACK
+            self._attacking = True
+            self._life_before_attack = find_response.status.life
+            self._attack_retry = 1
+            return (Action.ATTACK, self.get_weakest_enemy(find_response))
+        
+        if (self._attacking & 
+            self._attack_retry < 3 & 
+            self._life_before_attack == find_response.status.life & 
+            self._player.is_possible_attack(find_response)):
+
+            self._last_action = Action.ATTACK
+            self._attack_retry += 1
             return (Action.ATTACK, self.get_weakest_enemy(find_response))
 
         self._last_action = Action.MOVE
+        self._attacking = False
 
+        if (self._last_action == Action.MOVE or self._last_action == Action.ATTACK or self._last_action == Action.STOP):
+                for zone in find_response.neighbours_zones:
+                    print(zone.zone_id)
+                    num_enemies = self.get_num_enemies_in_zone(zone)
+                    if (self.karin_gift & self.lucky_unlucky):
+                        return Action.MOVE, zone.zone_id
+                    else:
+                        return Action.MOVE, zone.zone_id
+        
         if not self._player.is_possible_move(find_response):
             return Action.STOP, None
 
@@ -57,6 +85,13 @@ class OffensiveAdviser(Adviser):
 
         return (Action.MOVE, zone_with_more_enemies)
 
+    def atacar_enemigo(self, find_response):
+        self._player._life_points
+        vida_actual = find_response.status.life
+        while (vida_actual == find_response.status.life & numero_ataques<3):
+            numero_ataques = numero_ataques+1
+            return Action.ATTACK, find_response.get_enemies(self, find_response)
+        
     def _get_zone_with_more_enemies(self, find_response):
         max_enemies = -1
         zones_to_move = []
