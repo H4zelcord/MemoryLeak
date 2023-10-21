@@ -12,7 +12,6 @@ class DrunkPlayer(BasePlayer):
 
         #Consultar Vida Actual 
         print("Vida actual: ", self._life_points)
-        #struct (list, dict) = mod1, mod2, mod3, mod4 (activan según self._life points)
 
         #Si estamos en una zona con enemigos, llamaremos a MOVE para que encuentre una zona libre a la que ir.
         #En caso contrario, llamaremos a STOP para permanecer en la zona segura.
@@ -38,7 +37,10 @@ class DrunkPlayer(BasePlayer):
                 for zone in find_response.neighbours_zones:
                     print(zone.zone_id)
                     num_enemies = self.get_num_enemies_in_zone(zone)
-                    if num_enemies == 0:
+                    if (num_enemies == 0 & self.lucky.unlucky == True):
+                        print("No hay enemigos...")
+                        return Action.MOVE, zone.zone_id
+                    elif num_enemies == 0:
                         print("No hay enemigos...")
                         return Action.MOVE, zone.zone_id
             case _:
