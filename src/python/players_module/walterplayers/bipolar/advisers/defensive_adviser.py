@@ -22,9 +22,9 @@ class DefensiveAdviser(Adviser):
     def get_next_action(self, find_response):
         # It looks like we are one of the finisher players.
         if (not self._player.is_possible_move(find_response) and
-            self._player.is_possible_attack(find_response)):
-            return Action.ATTACK, self.get_weakest_enemy(find_response) 
-    
+             self._player.is_possible_attack(find_response)):
+            return Action.ATTACK, self.get_weakest_enemy(find_response)
+
         # There is alredy a plan, let execute next step OR
         # if a karin gift is known, player must go there
         if (self._actions_to_execute or
