@@ -18,6 +18,18 @@ class UltraOffensiveAdviser(Adviser):
         self._life_before_attack = 0
         self._attack_retry = 0 
 
+    def get_interesting_zone(self, find_response):
+        interesting_zones = []
+        for zone in find_response.neighbours_zones:
+            if self.is_interesting_zone(zone):
+                interesting_zones.append(zone)
+        if interesting_zones:
+        #Se ha encontrado alguna zona interesante, mover a por ella.
+            return interesting_zones[0]
+        else:
+        # No se encontraron zonas interesantes
+            return None
+
     def is_interesting_zone(self, zone):
         return zone.triggers.go_ryu or zone.triggers.lucky_unlucky or zone.triggers.karin_gift
 
@@ -30,14 +42,22 @@ class UltraOffensiveAdviser(Adviser):
         return weight
 
     def get_next_action(self, find_response):
-        ''' atacamos 3 veces o hasta que nos hagan daño. '''
-        if (Action.MOVE == self._last_action and 
-            self._player.is_possible_attack(find_response)):
-            self._last_action = Action.ATTACK
-            self._attacking = True
-            self._life_before_attack = find_response.status.life
-            self._attack_retry = 1
-            return (Action.ATTACK, self.get_weakest_enemy(find_response))
+        # Llamar al método get_interesting_zone para obtener la zona interesante
+        interesting_zone = self.get_interesting_zone(find_response)
+
+        if interesting_zone is not None:
+        # Configurar la acción de movimiento hacia la zona interesante
+            print ("Zona interesante encontrada")
+            return (Action.MOVE, interesting_zone.zone_id)
+        else:
+        # Si no encontramos zona interesante, atacamos 3 veces o hasta que nos hagan daño
+            if (Action.MOVE == self._last_action and 
+                self._player.is_possible_attack(find_response)):
+                self._last_action = Action.ATTACK
+                self._attacking = True
+                self._life_before_attack = find_response.status.life
+                self._attack_retry = 1
+                return (Action.ATTACK, self.get_weakest_enemy(find_response))
         
         if (self._attacking & 
             self._attack_retry < 3 & 

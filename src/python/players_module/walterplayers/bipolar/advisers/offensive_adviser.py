@@ -20,7 +20,7 @@ class OffensiveAdviser(Adviser):
 
     def get_weight_for_zone(self, zone):
         # lets include the edge, taking path with lucky_unlucky
-        if zone.triggers.lucky_unlucky | zone.triggers.karin_gift:
+        if zone.triggers.lucky_unlucky | zone.triggers.go_ryu:
             weight = 0.5
         else:
             weight = 1
