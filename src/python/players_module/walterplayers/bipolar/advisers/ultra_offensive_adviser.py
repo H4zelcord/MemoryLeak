@@ -46,7 +46,6 @@ class UltraOffensiveAdviser(Adviser):
         and find_response.status.buff.go_ryu == 1):
             Ias = find_response
             for zone in find_response.neighbours_zones:
-                print(zone.zone_id)
                 for elemento in Ias.current_zone.ias:
                     if elemento.role == Role.BERGEN_TOY:
                         Ias.current_zone.ias.remove(elemento)
@@ -85,7 +84,6 @@ class UltraOffensiveAdviser(Adviser):
 
         if (self._last_action == Action.MOVE or self._last_action == Action.ATTACK or self._last_action == Action.STOP):
                 for zone in find_response.neighbours_zones:
-                    print(zone.zone_id)
                     if (zone.triggers.karin_gift & zone.triggers.lucky_unlucky):
                         return Action.MOVE, zone.zone_id
                     else:
