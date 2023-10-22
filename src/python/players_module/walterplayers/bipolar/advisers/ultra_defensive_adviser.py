@@ -8,7 +8,7 @@ from walterplayers.bipolar.advisers.adviser import Adviser
 from walterplayers.constants import Action
 
 class UltraDefensiveAdviser(Adviser):
-    ''' Defensive Adviser will be used when life is less than the limit.
+    ''' UltraDefensive Adviser will be used when life is between 30% and 0%.
     This Adviser will priorize going for karin_gift zones'''
 
     def is_interesting_zone(self, zone):

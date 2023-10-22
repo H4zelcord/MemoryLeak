@@ -5,8 +5,8 @@ from walterplayers.constants import Action,Role
 
 
 class UltraOffensiveAdviser(Adviser):
-    ''' Offensive Adviser will be used when life is higher than the limit.
-    This Adviser will priorize going for go_ryu zones'''
+    ''' UltraOffensive Adviser will be used when life is between max and 80%.
+    This Adviser will priorize going for go_ryu and lucky_unlucky zones'''
 
     def __init__(self, player):
         super().__init__(player)
@@ -44,7 +44,6 @@ class UltraOffensiveAdviser(Adviser):
 
         if (find_response.status.buff.lucky_unlucky >=1 
         and find_response.status.buff.go_ryu == 1):
-            print("Tenemos bufos, buscamos enemigos")
             Ias = find_response
             for zone in find_response.neighbours_zones:
                 print(zone.zone_id)
@@ -61,7 +60,6 @@ class UltraOffensiveAdviser(Adviser):
             
         if interesting_zone is not None:
         # Configurar la acción de movimiento hacia la zona interesante
-            print ("Zona interesante encontrada")
             return (Action.MOVE, interesting_zone.zone_id)
         else:
         # Si no encontramos zona interesante, atacamos 3 veces o hasta que nos hagan daño
