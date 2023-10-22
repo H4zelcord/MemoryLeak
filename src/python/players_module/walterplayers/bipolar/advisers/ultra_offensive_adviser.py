@@ -4,7 +4,7 @@
 from random import choice, uniform
 from walterplayers.client.dtos.responses import Status
 from walterplayers.bipolar.advisers.adviser import Adviser
-from walterplayers.constants import Action
+from walterplayers.constants import Action,Role
 
 
 class UltraOffensiveAdviser(Adviser):
@@ -45,6 +45,16 @@ class UltraOffensiveAdviser(Adviser):
         # Llamar al método get_interesting_zone para obtener la zona interesante
         interesting_zone = self.get_interesting_zone(find_response)
 
+        if (find_response.status.buff.lucky_unlucky >=1 
+        and find_response.status.buff.go_ryu == 1):
+            print("Tenemos bufos, buscamos enemigos")
+            for zone in find_response.neighbours_zones:
+                print(zone.zone_id)
+                if self._player.is_possible_attack(find_response):
+                    return (Action.ATTACK, self.get_weakest_enemy(find_response))
+                else:
+                    return (Action.MOVE, zone.zone_id)
+            
         if interesting_zone is not None:
         # Configurar la acción de movimiento hacia la zona interesante
             print ("Zona interesante encontrada")
