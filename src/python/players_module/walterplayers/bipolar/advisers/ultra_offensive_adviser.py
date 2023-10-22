@@ -1,6 +1,3 @@
-#IMPORTANTE: ESTO ES UNA COPIA DE LA ESTRATEGIA OFENSIVA.
-#HAY QUE DESARROLLARLA ACORDE A LO PLANEADO.
-
 from random import choice, uniform
 from walterplayers.client.dtos.responses import Status
 from walterplayers.bipolar.advisers.adviser import Adviser
@@ -35,7 +32,7 @@ class UltraOffensiveAdviser(Adviser):
 
     def get_weight_for_zone(self, zone):
         # lets include the edge, taking path with lucky_unlucky
-        if zone.triggers.lucky_unlucky | zone.triggers.karin_gift:
+        if zone.triggers.lucky_unlucky | zone.triggers.go_ryu:
             weight = 0.5
         else:
             weight = 1
@@ -48,12 +45,19 @@ class UltraOffensiveAdviser(Adviser):
         if (find_response.status.buff.lucky_unlucky >=1 
         and find_response.status.buff.go_ryu == 1):
             print("Tenemos bufos, buscamos enemigos")
+            Ias = find_response
             for zone in find_response.neighbours_zones:
                 print(zone.zone_id)
-                if self._player.is_possible_attack(find_response):
-                    return (Action.ATTACK, self.get_weakest_enemy(find_response))
-                else:
-                    return (Action.MOVE, zone.zone_id)
+                for elemento in Ias.current_zone.ias:
+                    if elemento.role == Role.BERGEN_TOY:
+                        Ias.current_zone.ias.remove(elemento)
+                    if len(Ias.current_zone.ias) == 0:
+                        return Action.MOVE, (zone.zone_id)
+                    else:
+                        if self._player.is_possible_attack(find_response):
+                            return (Action.ATTACK, self.get_weakest_enemy(find_response))
+                        else:
+                            return (Action.MOVE, zone.zone_id)
             
         if interesting_zone is not None:
         # Configurar la acción de movimiento hacia la zona interesante

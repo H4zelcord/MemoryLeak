@@ -1,7 +1,7 @@
 from random import choice, uniform
 from walterplayers.client.dtos.responses import Status
 from walterplayers.bipolar.advisers.adviser import Adviser
-from walterplayers.constants import Action
+from walterplayers.constants import Action,Role
 
 
 class OffensiveAdviser(Adviser):
@@ -15,26 +15,63 @@ class OffensiveAdviser(Adviser):
         self._life_before_attack = 0
         self._attack_retry = 0 
 
+    def get_interesting_zone(self, find_response):
+        interesting_zones = []
+        for zone in find_response.neighbours_zones:
+            if self.is_interesting_zone(zone):
+                interesting_zones.append(zone)
+        if interesting_zones:
+        #Se ha encontrado alguna zona interesante, mover a por ella.
+            return interesting_zones[0]
+        else:
+        # No se encontraron zonas interesantes
+            return None
+
     def is_interesting_zone(self, zone):
-        return zone.triggers.go_ryu or zone.triggers.karin_gift or zone.triggers.lucky_unlucky 
+        return zone.triggers.go_ryu or zone.triggers.lucky_unlucky or zone.triggers.karin_gift
 
     def get_weight_for_zone(self, zone):
         # lets include the edge, taking path with lucky_unlucky
-        if zone.triggers.lucky_unlucky | zone.triggers.go_ryu:
+        if zone.triggers.lucky_unlucky | zone.triggers.karin_gift:
             weight = 0.5
         else:
             weight = 1
         return weight
 
     def get_next_action(self, find_response):
-        ''' atacamos 3 veces o hasta que nos hagan daño. '''
-        if (Action.MOVE == self._last_action  and 
-            self._player.is_possible_attack(find_response)):
-            self._last_action = Action.ATTACK
-            self._attacking = True
-            self._life_before_attack = find_response.status.life
-            self._attack_retry = 1
-            return (Action.ATTACK, self.get_weakest_enemy(find_response))
+        # Llamar al método get_interesting_zone para obtener la zona interesante
+        interesting_zone = self.get_interesting_zone(find_response)
+
+        if (find_response.status.buff.lucky_unlucky >=1 
+        and find_response.status.buff.go_ryu == 1):
+            print("Tenemos bufos, buscamos enemigos")
+            Ias = find_response
+            for zone in find_response.neighbours_zones:
+                print(zone.zone_id)
+                for elemento in Ias.current_zone.ias:
+                    if elemento.role == Role.BERGEN_TOY:
+                        Ias.current_zone.ias.remove(elemento)
+                    if len(Ias.current_zone.ias) == 0:
+                        return Action.MOVE, (zone.zone_id)
+                    else:
+                        if self._player.is_possible_attack(find_response):
+                            return (Action.ATTACK, self.get_weakest_enemy(find_response))
+                        else:
+                            return (Action.MOVE, zone.zone_id)
+            
+        if interesting_zone is not None:
+        # Configurar la acción de movimiento hacia la zona interesante
+            print ("Zona interesante encontrada")
+            return (Action.MOVE, interesting_zone.zone_id)
+        else:
+        # Si no encontramos zona interesante, atacamos 3 veces o hasta que nos hagan daño
+            if (Action.MOVE == self._last_action and 
+                self._player.is_possible_attack(find_response)):
+                self._last_action = Action.ATTACK
+                self._attacking = True
+                self._life_before_attack = find_response.status.life
+                self._attack_retry = 1
+                return (Action.ATTACK, self.get_weakest_enemy(find_response))
         
         if (self._attacking & 
             self._attack_retry < 3 & 
@@ -61,11 +98,7 @@ class OffensiveAdviser(Adviser):
 
         # There is alredy a plan, let execute next step or
         # If a go ryu zone is known, player must go there
-        if self._actions_to_execute:
-            return self._actions_to_execute.popleft()
-
-        if (find_response.status.buff.go_ryu == 0 and
-            self.check_and_update_interested_zone_path(find_response)):
+        if self._actions_to_execute or self.check_and_update_interested_zone_path(find_response):
             return self._actions_to_execute.popleft()
 
         if self._player.is_possible_attack(find_response) and uniform(0,1) <= 0.6:
